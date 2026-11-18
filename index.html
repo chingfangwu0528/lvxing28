@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>綠行 28 賓果</title>
+<meta name="description" content="28 天綠生活賓果挑戰：食衣住行育樂購，每天一個小行動，看看自己減了多少碳。">
+<meta property="og:title" content="綠行 28 賓果｜28 天綠生活挑戰">
+<meta property="og:description" content="每天一個小行動，連成一線解鎖徽章，一起來玩 #綠行28">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@700&display=swap">
+<style>
+:root{
+  --bg:#F3F0E6; --ink:#1F3D2E; --ink2:#3C5A4A; --muted:#5E7A6A; --line:#DCE3D6;
+  --done:#2F6B4F; --accent:#3F8F5F; --card:#FFFFFF; --star:#B07A12;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+button,input{font:inherit;color:inherit}
+.wrap{max-width:480px;margin:0 auto;padding:20px 14px 110px}
+.eyebrow{margin:0;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--done)}
+h1{margin:4px 0 14px;font-size:44px;line-height:1.05;font-weight:900;letter-spacing:1px}
+h1 .num{font-family:"Space Grotesk",sans-serif;color:var(--accent)}
+.row{display:flex;gap:8px;align-items:center}
+.name{flex:1;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px}
+.name label{font-size:12px;color:var(--muted);white-space:nowrap}
+.name input{border:0;outline:0;background:transparent;font-weight:700;font-size:15px;width:100%;min-width:0}
+.name:focus-within{border-color:var(--done)}
+.day{background:var(--ink);color:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.stat b{display:block;font-family:"Space Grotesk",sans-serif;font-size:24px;line-height:1.1}
+.stat span{font-size:11px;color:var(--muted)}
+.carbon{margin-top:8px;background:#E4EFE5;border-radius:14px;padding:10px 12px;font-size:13px;color:var(--ink);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.carbon b{font-family:"Space Grotesk",sans-serif;font-size:20px}
+.carbon small{color:var(--muted);font-size:11px}
+details{margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+summary{list-style:none;cursor:pointer;padding:12px 14px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;min-height:44px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent);font-size:18px}
+details[open] summary::after{content:"−"}
+.rules{padding:0 14px 14px;font-size:13px;line-height:1.7;color:var(--ink2)}
+.rules ol{margin:0;padding-left:20px}
+.rules .start{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.rules input[type=date]{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:#fff}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:12px}
+.cell{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:7px 6px 6px;min-height:96px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.cell:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.cell .tag{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;font-size:11px;font-weight:700}
+.cell .nm{font-size:13px;line-height:1.25;font-weight:700;word-break:break-all}
+.cell .star{position:absolute;top:6px;right:6px;font-size:10px;color:var(--star);letter-spacing:-1px}
+.cell .bar{margin-top:auto;display:flex;align-items:center;gap:4px;font-size:9.5px;color:var(--muted)}
+.cell .bar i{flex:1;height:4px;border-radius:4px;background:#E6EBE3;overflow:hidden;display:block}
+.cell .bar i em{display:block;height:100%;background:var(--accent)}
+.cell.done{background:var(--done);border-color:var(--done);color:#fff}
+.cell.done .nm{color:#fff}
+.cell.done .tag{background:#fff!important;color:var(--ink)!important}
+.cell.done .star{color:#FFE3A3}
+.cell .check{margin-top:auto;align-self:flex-end}
+.cell.free{border-style:dashed;border-color:var(--done)}
+.cell.free.done{border-style:solid}
+.cell.free .tag{width:auto;padding:0 6px;background:var(--ink);color:#fff}
+.cell.free .nm{font-weight:500;color:var(--muted)}
+.cell.free.named .nm{font-weight:700;color:var(--ink)}
+h2{font-size:14px;margin:20px 0 8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700;opacity:.35}
+.chip.on{opacity:1}
+.badges{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.badge{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 6px;text-align:center;opacity:.45}
+.badge.on{opacity:1;border-color:var(--accent);background:#F1F8F0}
+.badge b{display:block;font-size:12px;margin-top:4px}
+.badge span{font-size:10px;color:var(--muted)}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+.foot .ht{font-weight:700;color:var(--done)}
+.btn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:13px;cursor:pointer;min-height:40px}
+.btn.warn{border-color:#B8436A;color:#8C2F4B}
+.note{font-size:11px;color:var(--muted);line-height:1.6;margin-top:14px}
+.note a{color:var(--done)}
+.cta{position:fixed;left:0;right:0;bottom:0;padding:12px 14px 16px;background:linear-gradient(transparent,var(--bg) 30%)}
+.cta button{display:block;width:100%;max-width:452px;margin:0 auto;background:var(--ink);color:#fff;border:0;border-radius:14px;padding:15px;font-size:15px;font-weight:700;cursor:pointer}
+.sheet-bg{position:fixed;inset:0;background:rgba(20,35,27,.45);display:none;align-items:flex-end;justify-content:center;z-index:10}
+.sheet-bg.open{display:flex}
+.sheet{background:var(--bg);width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:18px 18px 22px;max-height:90vh;overflow:auto}
+.sheet h3{margin:6px 0 4px;font-size:22px}
+.sheet .meta{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.sheet .kg{margin:12px 0 4px;background:#fff;border-radius:12px;padding:12px;border:1px solid var(--line)}
+.sheet .kg b{font-size:18px;display:block}
+.sheet .kg p{margin:4px 0 0;font-size:12px;color:var(--ink2);line-height:1.6}
+.sheet .prog{font-size:13px;margin:10px 0}
+.sheet .acts{display:flex;gap:8px;margin-top:12px}
+.sheet .acts button{flex:1;min-height:48px;border-radius:12px;font-weight:700;cursor:pointer}
+.sheet .plus{background:var(--done);color:#fff;border:0}
+.sheet .minus{background:#fff;border:1px solid var(--line)}
+.sheet .close{background:transparent;border:0;float:right;font-size:14px;color:var(--muted);cursor:pointer;min-height:40px}
+.sheet input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;margin-top:8px}
+.sheet img{width:100%;border-radius:12px;display:block;margin-top:10px;border:1px solid var(--line)}
+.toast{font-size:12px;color:var(--ink2);margin-top:8px;min-height:18px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="eyebrow">28 天綠生活挑戰｜食・衣・住・行・育・樂・購</p>
+  <h1>綠行 <span class="num">28</span> 賓果</h1>
+  <div class="row">
+    <div class="name"><label for="who">挑戰者</label><input id="who" type="text" maxlength="12" placeholder="輸入你的名字"></div>
+    <div class="day" id="day">第 1 / 28 天</div>
+  </div>
+  <div class="stats">
+    <div class="stat"><b id="sDone">0/25</b><span>完成格數</span></div>
+    <div class="stat"><b id="sLines">0/12</b><span>連線</span></div>
+    <div class="stat"><b id="sFacets">0/7</b><span>集滿面向</span></div>
+  </div>
+  <div class="carbon"><span>估計已減碳 <small>（只算可量化的格子）</small></span><b id="sCarbon">0 kgCO₂e</b></div>
+
+  <details>
+    <summary>玩法說明</summary>
+    <div class="rules">
+      <ol>
+        <li>點格子查看說明，每完成一次按「完成一次 +1」。</li>
+        <li>有進度條的格子要做滿指定次數才算完成；★ 越多越有挑戰性。</li>
+        <li>連成一線（橫、直、斜）解鎖徽章，每一橫列至少完成一格。</li>
+        <li>中間「自選」格寫下你自己的綠行動。</li>
+        <li>減碳量是推估值，用來比較大小，不是精確計算。</li>
+      </ol>
+      <div class="start"><label for="startDate">挑戰開始日</label><input id="startDate" type="date"></div>
+    </div>
+  </details>
+
+  <div class="grid" id="grid"></div>
+
+  <h2>七大面向</h2>
+  <div class="chips" id="chips"></div>
+
+  <h2>徽章</h2>
+  <div class="badges" id="badges"></div>
+
+  <div class="foot"><span class="ht">#綠行28</span><button class="btn" id="reset" type="button">重設進度</button></div>
+  <p class="note">減碳係數來源：經濟部能源署 114 年度電力排碳係數、環境部產品碳足跡資訊網、台灣自來水公司、臺南市衛生局、環境部生活碳足跡計算器、英國 WRAP 衣物研究。想算自己的碳足跡，可到<a href="https://greenlifestyle.moenv.gov.tw/">環境部淨零綠生活資訊平台</a>。減碳量單位為公斤二氧化碳當量（kgCO₂e）。進度只存在這台裝置的瀏覽器裡。</p>
+</main>
+
+<div class="cta"><button type="button" id="shareBtn">產生我的分享圖</button></div>
+
+<div class="sheet-bg" id="sheetBg" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script>
+var FACETS = {
+  '食':['#F6D9C8','#8A3B1E'],'衣':['#EAD7EE','#6B3A75'],'住':['#D6E6F2','#1F4E79'],
+  '行':['#FBE7B5','#6E4D00'],'育':['#DCEFD9','#2D6A35'],'樂':['#F9D6DE','#8C2F4B'],'購':['#E3E0D6','#4E4A3C']
+};
+var FACET_ORDER = ['食','衣','住','行','育','樂','購'];
+// [面向, 名稱, 目標次數, 每次減碳(公克，內部計算用) 或 null, 標示, 說明, 星等]
+var CELLS = [
+  ['食','自備環保杯',3,30,'約 0.03 kgCO₂e／杯','環境部生活碳足跡計算器試算，自備環保杯一年約減 9.67 kgCO₂e；以每天一杯回推，每杯約 0.026–0.03 kgCO₂e。',0],
+  ['行','搭大眾運輸',3,375,'取代機車約 0.4 kgCO₂e／10 km','以搭公車 10 km 取代騎機車計算：(0.095 − 0.0575) kgCO₂e／延人公里 × 10 km。係數來自環境部產品碳足跡資訊網。搭捷運的減碳量會比較少。',0],
+  ['衣','修補一件衣物',1,null,'該件碳足跡↓20–30%','英國 WRAP 研究：衣物多穿 9 個月，碳足跡約可降低 20–30%。包包、襪子也算。',2],
+  ['住','隨手關燈拔插頭',7,15,'約 0.005–0.025 kgCO₂e／次','10 W 燈關 3 小時約 0.014 kgCO₂e；拔掉 2 W 待機電一天約 0.022 kgCO₂e。電力排碳係數 0.467 kgCO₂e／度（114 年度）。',0],
+  ['購','認明環保標章',1,null,'依產品而異','減碳量依產品而異。可到環境部產品碳足跡資訊網查詢碳標籤產品。',0],
+  ['住','垃圾分類回收',3,268,'約 0.5 kgCO₂e／每公斤回收物','每公斤回收物少進焚化爐約減 0.5355 kgCO₂e（焚化廠盤查估算）。這裡一次以 0.5 公斤回收物計。',0],
+  ['食','挑戰一餐蔬食',3,780,'約 0.78 kgCO₂e／餐','臺南市衛生局：一餐蔬食約可減少 0.78 kgCO₂e。',0],
+  ['樂','照顧一盆植物',1,null,'難以量化','一盆植物的固碳量很小，價值在綠美化與生活品質。',0],
+  ['購','申請電子帳單',1,30,'約 0.02–0.04 kgCO₂e／份','少印 1–2 張 A4。一張 A4 約 5 公克，紙類係數 4.24 kgCO₂e／公斤。',0],
+  ['行','騎 YouBike 或走路',3,160,'取代機車約 0.16 kgCO₂e／趟','每趟以 1.709 km 計（基北北桃「我的減碳存摺」算法），取代機車 0.095 kgCO₂e／延人公里。',0],
+  ['購','用借的代替買',1,null,'依物品而異','少買一件新品，就省下它的製造與運輸碳排；書、工具、家電差很多。',1],
+  ['住','洗臉刷牙關水',7,1,'約 0.001 kgCO₂e／次','少用約 5 公升水，自來水係數 0.150 kgCO₂e／度。碳量很小，但省水本身就有價值。',0],
+  ['自','自訂綠行動',1,null,'自己估估看','寫下一個你一個人就做得到的綠行動。',0],
+  ['食','惜食不剩菜',3,140,'少剩 100 公克菜約 0.14 kgCO₂e','以有機青江菜碳足跡換算（250 公克約 0.35 kgCO₂e）。肉類浪費的碳排更高。',0],
+  ['育','算算碳足跡',1,null,'不直接減碳','不直接減碳，但能找出自己的排碳大項。可用環境部淨零綠生活資訊平台的生活碳足跡計算器。',0],
+  ['樂','規劃低碳出遊',1,null,'依距離，可達數 kgCO₂e','例：100 km 改搭臺鐵自強號取代開車，約省 (0.115 − 0.036) × 100 ≈ 8 kgCO₂e。',2],
+  ['衣','捐出一件衣物',1,null,'該件碳足跡↓20–30%','讓衣服多被穿一次，就少做一件新衣。請捐乾淨、狀況好的衣物給用得到的人。',1],
+  ['食','在地當季食材',3,null,'難以單次量化','依食材與產地差很多，難以單次換算。',0],
+  ['育','少印一次紙',3,21,'約 0.021 kgCO₂e／張','一張 A4 約 5 公克，原生木漿影印紙係數 4.24 kgCO₂e／公斤。',0],
+  ['住','自然採光通風',3,15,'約 0.015–0.47 kgCO₂e／次','只省燈約 0.015 kgCO₂e；若少開 1 小時冷氣（約 1 度電）約 0.47 kgCO₂e。這裡以低值計。',0],
+  ['食','不拿免洗餐具',3,20,'約 0.02 kgCO₂e／雙筷','免洗筷一雙約 0.02 kgCO₂e（2010 年資料）。',0],
+  ['育','隨手撿5件垃圾',1,null,'難以量化','主要效益是減少環境污染，難以換算成碳量。',0],
+  ['購','自備購物袋',3,57,'約 0.057 kgCO₂e／個','少用一個塑膠袋約 0.057 kgCO₂e（環保署環保低碳活動平台）。環保袋要重複使用很多次才划算。',0],
+  ['住','手帕取代紙巾',3,5,'約 0.005 kgCO₂e／張','一張面紙約 1–2 公克，借用紙類係數推估。',0],
+  ['樂','分享一則心得',1,null,'不直接減碳','不直接減碳，但能帶動身邊的人一起做。',0]
+];
+var LINES = [];
+for (var r=0;r<5;r++){ LINES.push([0,1,2,3,4].map(function(c){return r*5+c;})); }
+for (var c=0;c<5;c++){ LINES.push([0,1,2,3,4].map(function(k){return k*5+c;})); }
+LINES.push([0,6,12,18,24]); LINES.push([4,8,12,16,20]);
+
+var KEY='lvxing28-bingo-v1';
+var state = {name:'', start:'', counts:new Array(25).fill(0), free:''};
+function load(){ try{ var s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s&&s.counts&&s.counts.length===25){ state=s; } }catch(e){} if(!state.start){ state.start=todayStr(); save(); } }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+function todayStr(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function isDone(i){ return state.counts[i] >= CELLS[i][2]; }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];}); }
+function cellName(i){ return CELLS[i][0]==='自' ? (state.free || '自訂綠行動') : CELLS[i][1]; }
+
+function compute(){
+  var done=0, lines=0, facets={}, grams=0;
+  for (var i=0;i<25;i++){ if(isDone(i)){ done++; if(CELLS[i][0]!=='自') facets[CELLS[i][0]]=1; } if(CELLS[i][3]) grams += Math.min(state.counts[i], CELLS[i][2]) * CELLS[i][3]; }
+  LINES.forEach(function(L){ if(L.every(isDone)) lines++; });
+  var fc = Object.keys(facets).length;
+  return {done:done, lines:lines, facets:facets, fc:fc, grams:grams};
+}
+function fmtG(g){ var k=g/1000; var t = k>=10 ? k.toFixed(1) : k.toFixed(3); t=t.replace(/(\.\d*?)0+$/,'$1').replace(/\.$/,''); return t+' kgCO₂e'; }
+function dayText(){
+  var s=new Date(state.start+'T00:00:00'), t=new Date(todayStr()+'T00:00:00');
+  var n=Math.floor((t-s)/86400000)+1;
+  if (n<1) return '倒數 '+(1-n)+' 天開始';
+  if (n>28) return '挑戰完成';
+  return '第 '+n+' / 28 天';
+}
+
+var CHECK='<svg class="check" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="none" stroke="#fff" stroke-width="1.6"/><path d="M6 10.3l2.8 2.8L14.2 7.3" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var BADGE_ICONS = {
+  sprout:'<path d="M12 21v-8M12 13c0-4-3-6-7-6 0 4 3 6 7 6zM12 11c0-4 3-6 7-6 0 4-3 6-7 6z"/>',
+  leaf:'<path d="M5 19c0-8 6-14 14-14 0 8-6 14-14 14zM5 19l8-8"/>',
+  rainbow:'<path d="M3 17a9 9 0 0118 0M6.5 17a5.5 5.5 0 0111 0M10 17a2 2 0 014 0"/>',
+  tree:'<path d="M12 21v-5M12 3l6 8h-3l4 5H5l4-5H6z"/>'
+};
+function render(){
+  document.getElementById('who').value = state.name || '';
+  document.getElementById('startDate').value = state.start;
+  document.getElementById('day').textContent = dayText();
+  var g=document.getElementById('grid'); var html='';
+  for (var i=0;i<25;i++){
+    var C=CELLS[i], done=isDone(i), free=C[0]==='自', f=FACETS[C[0]];
+    var cls='cell'+(done?' done':'')+(free?' free':'')+(free&&state.free?' named':'');
+    var tag = free ? '<span class="tag">自選</span>' : '<span class="tag" style="background:'+f[0]+';color:'+f[1]+'">'+C[0]+'</span>';
+    var star = C[6] ? '<span class="star" aria-label="難度'+C[6]+'星">'+'★'.repeat(C[6])+'</span>' : '';
+    var foot = '';
+    if (done) foot = CHECK;
+    else if (C[2]>1) foot = '<span class="bar"><i><em style="width:'+(state.counts[i]/C[2]*100)+'%"></em></i>'+state.counts[i]+'/'+C[2]+'</span>';
+    html += '<button type="button" class="'+cls+'" data-i="'+i+'" aria-label="'+esc(cellName(i))+'，'+(done?'已完成':'進度 '+state.counts[i]+'/'+C[2])+'">'+tag+star+'<span class="nm">'+esc(cellName(i))+'</span>'+foot+'</button>';
+  }
+  g.innerHTML = html;
+  var s=compute();
+  document.getElementById('sDone').textContent = s.done+'/25';
+  document.getElementById('sLines').textContent = s.lines+'/12';
+  document.getElementById('sFacets').textContent = s.fc+'/7';
+  document.getElementById('sCarbon').textContent = '約 '+fmtG(s.grams);
+  document.getElementById('chips').innerHTML = FACET_ORDER.map(function(k){ var f=FACETS[k]; return '<span class="chip'+(s.facets[k]?' on':'')+'" style="background:'+f[0]+';color:'+f[1]+'">'+k+'</span>'; }).join('');
+  var B=[['sprout','綠芽','連成 1 線',s.lines>=1],['leaf','綠葉','連成 3 線',s.lines>=3],['rainbow','全面綠行','集滿七色',s.fc>=7],['tree','綠行大師','25 格全滿',s.done>=25]];
+  document.getElementById('badges').innerHTML = B.map(function(b){ return '<div class="badge'+(b[3]?' on':'')+'"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="'+(b[3]?'#2F6B4F':'#7C8F84')+'" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+BADGE_ICONS[b[0]]+'</svg><b>'+b[1]+'</b><span>'+b[2]+'</span></div>'; }).join('');
+}
+
+var bg=document.getElementById('sheetBg'), sheet=document.getElementById('sheet'), lastFocus=null;
+function openSheet(html){ lastFocus=document.activeElement; sheet.innerHTML=html; bg.classList.add('open'); var f=sheet.querySelector('button,input'); if(f) f.focus(); }
+function closeSheet(){ bg.classList.remove('open'); sheet.innerHTML=''; if(lastFocus) lastFocus.focus(); }
+bg.addEventListener('click', function(e){ if(e.target===bg) closeSheet(); });
+document.addEventListener('keydown', function(e){ if(e.key==='Escape' && bg.classList.contains('open')) closeSheet(); });
+
+function showCell(i){
+  var C=CELLS[i], free=C[0]==='自', f=FACETS[C[0]];
+  var meta = free ? '<span>中間自選格</span>' : '<span class="tag" style="display:inline-flex;width:22px;height:22px;border-radius:999px;align-items:center;justify-content:center;font-weight:700;background:'+f[0]+';color:'+f[1]+'">'+C[0]+'</span><span>'+(C[6]?'難度 '+'★'.repeat(C[6]):'')+'</span>';
+  var html = '<button class="close" type="button" data-act="close">關閉</button><div class="meta">'+meta+'</div><h3 id="sheetTitle">'+esc(cellName(i))+'</h3>';
+  if (free) html += '<label for="freeIn" style="font-size:13px">我的綠行動</label><input id="freeIn" type="text" maxlength="12" value="'+esc(state.free||'')+'" placeholder="例如：自己煮一餐">';
+  html += '<div class="kg"><b>'+C[4]+'</b><p>'+C[5]+'</p></div>';
+  html += '<div class="prog">進度：<b>'+Math.min(state.counts[i],C[2])+' / '+C[2]+'</b>'+(isDone(i)?'　已完成':'')+'</div>';
+  html += '<div class="acts"><button class="minus" type="button" data-act="minus">−1</button><button class="plus" type="button" data-act="plus">完成一次 +1</button></div>';
+  openSheet(html);
+  sheet.onclick = function(e){
+    var a=e.target.getAttribute && e.target.getAttribute('data-act'); if(!a) return;
+    if (a==='close'){ closeSheet(); return; }
+    if (a==='plus' && state.counts[i]<C[2]) state.counts[i]++;
+    if (a==='minus' && state.counts[i]>0) state.counts[i]--;
+    save(); render(); var keep=free?document.getElementById('freeIn'):null; var v=keep?keep.value:null;
+    showCell(i); if(free&&v!==null){ document.getElementById('freeIn').value=v; }
+  };
+  if (free){ document.getElementById('freeIn').addEventListener('input', function(e){ state.free=e.target.value.trim(); save(); render(); sheet.querySelector('h3').textContent=cellName(i); }); }
+}
+document.getElementById('grid').addEventListener('click', function(e){ var b=e.target.closest('.cell'); if(b) showCell(+b.getAttribute('data-i')); });
+document.getElementById('who').addEventListener('input', function(e){ state.name=e.target.value.trim(); save(); });
+document.getElementById('startDate').addEventListener('change', function(e){ if(e.target.value){ state.start=e.target.value; save(); render(); } });
+
+var resetArmed=false, resetTimer=null;
+document.getElementById('reset').addEventListener('click', function(){
+  var b=this;
+  if (!resetArmed){ resetArmed=true; b.textContent='再按一次確認清空'; b.classList.add('warn'); resetTimer=setTimeout(function(){ resetArmed=false; b.textContent='重設進度'; b.classList.remove('warn'); },4000); return; }
+  clearTimeout(resetTimer); resetArmed=false; b.textContent='重設進度'; b.classList.remove('warn');
+  state.counts=new Array(25).fill(0); state.free=''; save(); render();
+});
+
+// ---------- 分享圖 ----------
+function rr(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+function wrapText(ctx,text,maxW){ var lines=[], cur=''; for (var ch of text){ if(ctx.measureText(cur+ch).width>maxW && cur){ lines.push(cur); cur=ch; } else cur+=ch; } if(cur) lines.push(cur); return lines; }
+function drawShare(){
+  var W=1080,H=1350, cv=document.createElement('canvas'); cv.width=W; cv.height=H; var x=cv.getContext('2d');
+  var F='"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';
+  x.fillStyle='#F3F0E6'; x.fillRect(0,0,W,H);
+  x.fillStyle='#2F6B4F'; x.font='700 26px '+F; x.fillText('28 天綠生活挑戰｜食・衣・住・行・育・樂・購',72,96);
+  x.fillStyle='#1F3D2E'; x.font='900 96px '+F; x.fillText('綠行',72,200); var w1=x.measureText('綠行 ').width;
+  x.fillStyle='#3F8F5F'; x.font='700 96px "Space Grotesk",'+F; x.fillText('28',72+w1,200); var w2=x.measureText('28 ').width;
+  x.fillStyle='#1F3D2E'; x.font='900 96px '+F; x.fillText('賓果',72+w1+w2,200);
+  var s=compute();
+  x.font='700 28px '+F; x.fillStyle='#3C5A4A';
+  x.fillText((state.name?state.name+'｜':'')+dayText()+'｜完成 '+s.done+'/25　連線 '+s.lines+' 條　面向 '+s.fc+'/7',72,256);
+  var gx=72, gy=296, gap=12, cw=(W-144-gap*4)/5, ch=168;
+  for (var i=0;i<25;i++){
+    var C=CELLS[i], cx=gx+(i%5)*(cw+gap), cy=gy+Math.floor(i/5)*(ch+gap), done=isDone(i), free=C[0]==='自';
+    rr(x,cx,cy,cw,ch,18); x.fillStyle=done?'#2F6B4F':'#FFFFFF'; x.fill();
+    x.lineWidth=free&&!done?3:2; x.strokeStyle=done?'#2F6B4F':(free?'#2F6B4F':'#DCE3D6'); if(free&&!done) x.setLineDash([10,7]); x.stroke(); x.setLineDash([]);
+    var f=FACETS[C[0]]; var tagTxt=free?'自選':C[0];
+    x.font='700 22px '+F; var tw=Math.max(36,x.measureText(tagTxt).width+18);
+    rr(x,cx+14,cy+14,tw,36,18); x.fillStyle=done?'#FFFFFF':(free?'#1F3D2E':f[0]); x.fill();
+    x.fillStyle=done?'#1F3D2E':(free?'#FFFFFF':f[1]); x.textAlign='center'; x.fillText(tagTxt,cx+14+tw/2,cy+40); x.textAlign='left';
+    x.fillStyle=done?'#FFFFFF':'#1F3D2E'; x.font='700 25px '+F;
+    wrapText(x,cellName(i),cw-28).slice(0,3).forEach(function(l,k){ x.fillText(l,cx+14,cy+86+k*31); });
+    if (done){ x.strokeStyle='#FFFFFF'; x.lineWidth=3; x.beginPath(); x.arc(cx+cw-34,cy+ch-34,16,0,Math.PI*2); x.stroke(); x.beginPath(); x.moveTo(cx+cw-42,cy+ch-34); x.lineTo(cx+cw-36,cy+ch-28); x.lineTo(cx+cw-25,cy+ch-40); x.stroke(); }
+    else if (C[2]>1 && state.counts[i]>0){ rr(x,cx+14,cy+ch-24,cw-28,8,4); x.fillStyle='#E6EBE3'; x.fill(); rr(x,cx+14,cy+ch-24,(cw-28)*state.counts[i]/C[2],8,4); x.fillStyle='#3F8F5F'; x.fill(); }
+  }
+  x.fillStyle='#1F3D2E'; x.font='700 30px '+F; x.fillText('估計已減碳 約 '+fmtG(s.grams),72,H-62);
+  x.fillStyle='#2F6B4F'; x.textAlign='right'; x.fillText('#綠行28',W-72,H-62); x.textAlign='left';
+  return cv;
+}
+document.getElementById('shareBtn').addEventListener('click', function(){
+  var cv=drawShare(); var url=cv.toDataURL('image/png');
+  openSheet('<button class="close" type="button" data-act="close">關閉</button><h3 id="sheetTitle">我的分享圖</h3><p style="font-size:13px;color:#3C5A4A;margin:4px 0 0">手機可長按圖片儲存，或按下方按鈕下載。</p><img alt="我的綠行 28 賓果進度圖" src="'+url+'"><div class="acts"><button class="plus" type="button" data-act="save">下載圖片</button></div><div class="toast" id="toast" role="status"></div>');
+  sheet.onclick=function(e){
+    var a=e.target.getAttribute && e.target.getAttribute('data-act'); if(!a) return;
+    if (a==='close'){ closeSheet(); return; }
+    if (a==='save'){ var t=document.getElementById('toast'); saveImage(cv,t); }
+  };
+});
+var dl=null;
+function saveImage(cv,t){
+  if (!dl){
+    cv.toBlob(function(blob){
+      try {
+        var u=URL.createObjectURL(blob), a=document.createElement('a');
+        a.href=u; a.download='綠行28賓果.png'; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(u); }, 4000);
+        t.textContent='已開始下載；若沒有反應，請長按或右鍵另存圖片。';
+      } catch(e){ t.textContent='這裡無法直接下載，請長按或右鍵另存圖片。'; }
+    },'image/png');
+    return;
+  }
+  cv.toBlob(function(blob){
+    dl.save({filename:'綠行28賓果.png', data:blob}).then(function(r){ t.textContent = r.status==='saved' ? '已下載。' : '已送出。'; })
+      .catch(function(err){ t.textContent = err && err.code==='declined' ? '已取消下載。' : '目前無法下載，請長按或右鍵另存圖片。'; });
+  },'image/png');
+}
+try { if (window.claude && typeof window.claude.use==='function'){ window.claude.use('downloads').then(function(d){ dl=d; }).catch(function(){}); } } catch(e){}
+
+load(); render();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){});
+</script>
+</body>
+</html>
