@@ -95,7 +95,7 @@ h2{font-size:14px;margin:20px 0 8px}
 .sheet .minus{background:#fff;border:1px solid var(--line)}
 .sheet .close{background:transparent;border:0;float:right;font-size:14px;color:var(--muted);cursor:pointer;min-height:40px}
 .sheet input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;margin-top:8px}
-.sheet img{width:100%;border-radius:12px;display:block;margin-top:10px;border:1px solid var(--line)}
+.sheet img{-webkit-touch-callout:default;user-select:auto;width:100%;border-radius:12px;display:block;margin-top:10px;border:1px solid var(--line)}
 .toast{font-size:12px;color:var(--ink2);margin-top:8px;min-height:18px}
 </style>
 </head>
@@ -314,7 +314,7 @@ function drawShare(){
 }
 document.getElementById('shareBtn').addEventListener('click', function(){
   var cv=drawShare(); var url=cv.toDataURL('image/png');
-  openSheet('<button class="close" type="button" data-act="close">關閉</button><h3 id="sheetTitle">我的分享圖</h3><p style="font-size:13px;color:#3C5A4A;margin:4px 0 0">手機可長按圖片儲存，或按下方按鈕下載。</p><img alt="我的綠行 28 賓果進度圖" src="'+url+'"><div class="acts"><button class="plus" type="button" data-act="save">下載圖片</button></div><div class="toast" id="toast" role="status"></div>');
+  openSheet('<button class="close" type="button" data-act="close">關閉</button><h3 id="sheetTitle">我的分享圖</h3>'+(IN_LINE?'<p style="font-size:13px;color:#8C2F4B;margin:6px 0 0;line-height:1.6">你正在用 LINE 內建瀏覽器，可能無法存圖。請點右上角「⋯」→「以其他應用程式開啟」（或「用預設瀏覽器開啟」），再按一次。</p>':'')+'<p style="font-size:13px;color:#3C5A4A;margin:4px 0 0;line-height:1.6">按下方按鈕，在分享選單選「儲存影像」；也可以直接長按圖片儲存。</p><img alt="我的綠行 28 賓果進度圖" src="'+url+'"><div class="acts"><button class="plus" type="button" data-act="save">儲存／分享圖片</button></div><div class="toast" id="toast" role="status"></div>');
   sheet.onclick=function(e){
     var a=e.target.getAttribute && e.target.getAttribute('data-act'); if(!a) return;
     if (a==='close'){ closeSheet(); return; }
@@ -322,21 +322,30 @@ document.getElementById('shareBtn').addEventListener('click', function(){
   };
 });
 var dl=null;
+var IN_LINE = /\bLine\//i.test(navigator.userAgent);
+function blobDownload(blob,t){
+  try {
+    var u=URL.createObjectURL(blob), a=document.createElement('a');
+    a.href=u; a.download='綠行28賓果.png'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(u); }, 4000);
+    t.textContent='已開始下載；若沒有反應，請長按上方圖片儲存。';
+  } catch(e){ t.textContent='請長按上方圖片，選「儲存影像」或「下載圖片」。'; }
+}
 function saveImage(cv,t){
-  if (!dl){
-    cv.toBlob(function(blob){
-      try {
-        var u=URL.createObjectURL(blob), a=document.createElement('a');
-        a.href=u; a.download='綠行28賓果.png'; document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(function(){ URL.revokeObjectURL(u); }, 4000);
-        t.textContent='已開始下載；若沒有反應，請長按或右鍵另存圖片。';
-      } catch(e){ t.textContent='這裡無法直接下載，請長按或右鍵另存圖片。'; }
-    },'image/png');
-    return;
-  }
   cv.toBlob(function(blob){
-    dl.save({filename:'綠行28賓果.png', data:blob}).then(function(r){ t.textContent = r.status==='saved' ? '已下載。' : '已送出。'; })
-      .catch(function(err){ t.textContent = err && err.code==='declined' ? '已取消下載。' : '目前無法下載，請長按或右鍵另存圖片。'; });
+    if (dl){
+      dl.save({filename:'綠行28賓果.png', data:blob}).then(function(r){ t.textContent = r.status==='saved' ? '已下載。' : '已送出。'; })
+        .catch(function(err){ t.textContent = err && err.code==='declined' ? '已取消下載。' : '請長按上方圖片儲存。'; });
+      return;
+    }
+    var file=null;
+    try { file=new File([blob],'綠行28賓果.png',{type:'image/png'}); } catch(e){}
+    if (file && navigator.canShare && navigator.canShare({files:[file]})){
+      navigator.share({files:[file], title:'綠行 28 賓果', text:'#綠行28'}).then(function(){ t.textContent='完成！iPhone 選「儲存影像」就會存進相簿。'; })
+        .catch(function(err){ if(err && err.name==='AbortError'){ t.textContent='已取消。'; } else { blobDownload(blob,t); } });
+      return;
+    }
+    blobDownload(blob,t);
   },'image/png');
 }
 try { if (window.claude && typeof window.claude.use==='function'){ window.claude.use('downloads').then(function(d){ dl=d; }).catch(function(){}); } } catch(e){}
